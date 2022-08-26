@@ -14,6 +14,7 @@
 <form action="" method="POST" class="card-deck">
     <div class="row card">
         <div class="col-10">
+        <h5 class="mt-2">Listado de Usuarios</h5>
             <table class="table table-striped table-bordered" style="width: 100%" id="tabla">
                 <thead>
                     <th>Nombre de usuario</th>

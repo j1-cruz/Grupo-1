@@ -2,7 +2,7 @@
 
 <?php
     include("../config/conexionBD.php");
-    $sentenciaSQL=$conexion->prepare("SELECT * FROM materias");
+    $sentenciaSQL=$conexion->prepare("SELECT * FROM carreras");
     $sentenciaSQL->execute(); 
     $listaCarreras=$sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
     $fndResolucion=(isset($_POST["fndResolucion"]))?$_POST["fndResolucion"]:"";
@@ -37,9 +37,7 @@
                 <input type="text" class="form-control" name="fndResolucion" id="fndResolucion" hidden>
             </div>
             <div class="btn-toolbar">
-                <button type="button" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" onclick="location.href='carreras/agregarMateria.php'">Agregar</button>
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar" id="Modificar" formaction="materias/editarMateria.php" disabled>Modificar Materia</button>
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="carreras/eliminarCarrera.php" disabled>Eliminar</button>
+            <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Agregar" id="Agregar" formaction="materias/editar.php" disabled>Editar materias</button>
             </div>
         </div>
     </div>
@@ -68,13 +66,11 @@
                 $(this).removeClass('selected');
                 document.getElementById("fndResolucion").value = "";
                 document.getElementById("Modificar").disabled = true;
-                document.getElementById("Eliminar").disabled = true;
             } else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
                 document.getElementById("fndResolucion").value = pikResolucion;
                 document.getElementById("Modificar").disabled = false;
-                document.getElementById("Eliminar").disabled = false;
             }
         });
         $('#button').click(function () {

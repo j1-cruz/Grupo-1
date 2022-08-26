@@ -41,6 +41,7 @@
                 <button type="button" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" onclick="location.href='alumnos/agregarAlumno.php'">Agregar</button> 
                 <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar" id="Modificar" formaction="alumnos/modificarAlumno.php" disabled>Modificar</button>
                 <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="alumnos/eliminarAlumno.php" disabled>Eliminar</button>
+                <button type="submit"class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Ver" id="Ver" formaction="alumnos/verAlumno.php" disabled >Ver Alumno</button>
             </div>
         </div>
     </div>
@@ -66,12 +67,14 @@
                 document.getElementById("fndDocumento").value = "";
                 document.getElementById("Modificar").disabled = true;
                 document.getElementById("Eliminar").disabled = true;
+                document.getElementById("Ver").disabled = true;
             } else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
                 document.getElementById("fndDocumento").value = pikDocumento;
                 document.getElementById("Modificar").disabled = false;
                 document.getElementById("Eliminar").disabled = false;
+                document.getElementById("Ver").disabled = false;
             }
         });
         $('#button').click(function () {
