@@ -9,6 +9,9 @@
 
 <?php
     $sndResolucion=(isset($_POST["fndResolucion"]))?$_POST["fndResolucion"]:"";
+    $txtCodigo1=(isset($_POST["txtCodigo1"]))?$_POST["txtCodigo1"]:"";
+    $txtNombre1=(isset($_POST["txtNombre1"]))?$_POST["txtNombre1"]:"";
+    $txtNombre2=(isset($_POST["txtNombre2"]))?$_POST["txtNombre2"]:"";
     $txtCodigo=(isset($_POST["txtCodigo"]))?$_POST["txtCodigo"]:"";
     $txtNombreMateria=(isset($_POST["txtNombreMateria"]))?$_POST["txtNombreMateria"]:"";
     $accion=(isset($_POST["accion"]))?$_POST["accion"]:"";
@@ -87,10 +90,84 @@
                     $sentenciaSQL->bindParam(':nombre', $txtNombreMateria);
                     $sentenciaSQL->bindParam(':anio', $_SESSION['varAnioCursada']);
                     $sentenciaSQL->execute();
-                    header("location:agregar.php");
+                    header("location:editar.php");
                 }
             }    
-            break;       
+            break;
+        case "Retirar":
+            $sentenciaSQL=$conexion->prepare("DELETE FROM materias WHERE resolucion=:resolucion AND nombre=:nombre AND anio=:anio");
+            $sentenciaSQL->bindParam(':resolucion', $_SESSION['varResolucion']);
+            $sentenciaSQL->bindParam(':nombre', $txtNombre2);
+            $sentenciaSQL->bindParam(':anio', $_SESSION['varAnioCursada']);
+            $sentenciaSQL->execute();
+            echo '
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    swal({
+                        position: "center",
+                        type: "success",
+                        title: "La materia ha sido retirada",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                });
+                setTimeout( 1500 );
+            </script>
+            ';
+            break;
+        case "Eliminar": // Verificar si tienen notas asociadas antes de borrar
+            echo '
+            <script type="text/javascript">
+                function borrarRegistro() {
+                    $.ajax({
+                        type: "post",
+                        url: "borrar.php",
+                        data: {
+                                codigo: "'; echo $txtCodigo1; echo'",
+                                nombre: "'; echo $txtNombre1; echo'",
+                        },
+                        success: function(msg) {
+                            swal({
+                                position: "center",
+                                type: "success",
+                                title: "La materia ha sido eliminada",
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            setTimeout( function() { window.location.href = "editar.php"; }, 1500 );
+                        },
+                        error: function() {
+                            swal({
+                                position: "center",
+                                type: "error",
+                                title: "Hubo un problema",
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        },
+                    });
+                }
+
+                $(document).ready(function(){
+                    Swal.fire({
+                        title: "¿Estás seguro?",
+                        text: "¡Se eliminarán todas las materias!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        cancelButtonText: "Cancelar",
+                        confirmButtonText: "Eliminar"
+                    }).then((result) => {
+                        if (result.value) {
+                            borrarRegistro();               
+                        }
+                    })
+                }); 
+                
+            </script>
+            ';
+            break;    
     }
 ?>
 
@@ -122,30 +199,42 @@
         </div>
 
         <div class="card">
-            <div class="card-block">
-                <h4 class="card-title">Puede seleccionarla si aparece en el listado</h4>
-                <div class="col-12">
-                    <table class="table table-striped table-bordered" style="width: 100%" id="tabla1">
-                        <thead>
-                            <th>Código</th>
-                            <th>Nombre</th>
-                        </thead>
-                        <tbody>
-                            <?php
-                                $sentenciaSQL=$conexion->prepare("SELECT DISTINCT codigo, nombre FROM materias");
-                                $sentenciaSQL->execute(); 
-                                $filtro1Materias=$sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
-                            ?>
-                            <?php foreach($filtro1Materias as $filtro1) { ?>
-                            <tr>
-                                <td><?php echo $filtro1['codigo']; ?></td>
-                                <td><?php echo $filtro1['nombre']; ?></td>
-                            </tr>
-                            <?php } ?>     
-                        </tbody>
-                    </table>
+            <form method="POST">
+                <div class="card-block">
+                    <div class="form-row">
+                        <div class="col-md-10">
+                            <h4 class="card-title">Puede seleccionarla si aparece en el listado</h4>
+                        </div>
+                        <div class="col-md-2">   
+                            <button type="submit" name="accion" value="Eliminar" class="btn btn-primary float-right" id="Eliminar" disabled>Eliminar</button>
+                        </div>
+                    </div>
+                    <br>
+                    <input type="text" class="form-control" name="txtCodigo1" value="<?php echo $txtCodigo1; ?>" id="txtCodigo1" hidden>
+                    <input type="text" class="form-control" name="txtNombre1" value="<?php echo $txtNombre1; ?>" id="txtNombre1" hidden>
+                    <div class="col-12">
+                        <table class="table table-striped table-bordered" style="width: 100%" id="tabla1">
+                            <thead>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    $sentenciaSQL=$conexion->prepare("SELECT DISTINCT codigo, nombre FROM materias");
+                                    $sentenciaSQL->execute(); 
+                                    $filtro1Materias=$sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
+                                ?>
+                                <?php foreach($filtro1Materias as $filtro1) { ?>
+                                <tr>
+                                    <td><?php echo $filtro1['codigo']; ?></td>
+                                    <td><?php echo $filtro1['nombre']; ?></td>
+                                </tr>
+                                <?php } ?>     
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
         <br>
     </div>
@@ -187,6 +276,8 @@
                             <?php } ?>     
                         </tbody>
                     </table>
+                    <input type="text" class="form-control" name="txtNombre2" value="<?php echo $txtNombre2; ?>" id="txtNombre2" hidden>
+                    <button type="submit" name="accion" value="Retirar" class="btn btn-primary" id="Retirar" disabled><- Retirar</button>
                     <button type="button" class="btn btn-primary float-right" onclick="location.href='../materias.php'">Terminar</button>
                     <br><br>
                 </div>
@@ -224,6 +315,9 @@
                 document.getElementById("txtCodigo").readOnly = false;
                 document.getElementById("txtNombreMateria").value = "";
                 document.getElementById("txtNombreMateria").readOnly = false;
+                document.getElementById("txtCodigo1").value = "";
+                document.getElementById("txtNombre1").value = "";
+                document.getElementById("Eliminar").disabled = true;
             } else {
                 table1.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
@@ -231,6 +325,9 @@
                 document.getElementById("txtCodigo").readOnly = true;
                 document.getElementById("txtNombreMateria").value = pikNombreMateria;
                 document.getElementById("txtNombreMateria").readOnly = true;
+                document.getElementById("txtCodigo1").value = pikCodigo;
+                document.getElementById("txtNombre1").value = pikNombreMateria;
+                document.getElementById("Eliminar").disabled = false;
             }
         });
         $('#button').click(function () {
@@ -252,6 +349,23 @@
             "lengthChange": false,
             "pagingType": "simple",
         });
+        $('#tabla2 tbody').on('click', 'tr', function () {
+            var pikNombre = table2.row( this ).data()[0];       
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+                document.getElementById("txtNombre2").value = "";
+                document.getElementById("Retirar").disabled = true;
+            } else {
+                table2.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+                document.getElementById("txtNombre2").value = pikNombre;
+                document.getElementById("Retirar").disabled = false;
+            }
+        });
+        $('#button').click(function () {
+            table2.row('.selected').remove().draw(false);
+            console.log( table2.row( this ).data() );
+        });    
     });
 </script>
 

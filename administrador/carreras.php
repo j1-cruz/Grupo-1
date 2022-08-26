@@ -9,9 +9,11 @@
     $accion=(isset($_POST["accion"]))?$_POST["accion"]:"";
 ?>
 
-<form action="" method="POST">
-    <div class="row">
+<h3 class="text-center">Carreras</h3>
+<form class="card-deck" action="" method="POST">
+    <div class="row card">
         <div class="col-10">
+            <h5 class="mt-2">Litado de carreras</h5>
             <table class="table table-striped table-bordered" style="width: 100%" id="tabla">
                 <thead>
                     <th>Resolución</th>
@@ -35,9 +37,9 @@
                 <input type="text" class="form-control" name="fndResolucion" id="fndResolucion" hidden>
             </div>
             <div class="btn-toolbar">
-                <button type="button" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" onclick="location.href='carreras/agregar.php'">Agregar</button> 
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar" id="Modificar" formaction="carreras/modificar.php" disabled>Modificar</button>
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="carreras/eliminar.php" disabled>Eliminar</button>
+                <button type="button" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" onclick="location.href='carreras/agregarCarrera.php'">Agregar</button> 
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar" id="Modificar" formaction="carreras/modificarCarrera.php" disabled>Modificar</button>
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="carreras/eliminarCarrera.php" disabled>Eliminar</button>
             </div>
         </div>
     </div>

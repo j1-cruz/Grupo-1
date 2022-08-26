@@ -33,28 +33,31 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <ul class="nav navbar-nav">
-            <li class="nav-item">
+    <ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo $url;?>/administrador/carreras.php">Carreras</a>
+                </li>    
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo $url;?>/administrador/materias.php">Materias</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo $url;?>/administrador/alumnos.php">Alumnos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profesores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Consultas</a>
+                </li>
+           
+        </ul>
+        <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item active">
                 <a class="nav-link" href="<?php echo $url;?>/administrador">Inicio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo $url;?>/administrador/usuarios.php">Usuarios</a>
+                <a class="nav-link " href="<?php echo $url;?>/administrador/usuarios.php">Usuarios</a>
             </li> 
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo $url;?>/administrador/carreras.php">Carreras</a>
-            </li>    
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo $url;?>/administrador/materias.php">Materias</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo $url;?>/administrador/alumnos.php">Alumnos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Profesores</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Consultas</a>
-            </li>
             <li class="nav-item">
                 <a class="nav-link" href=<?php echo $url;?>/administrador/cerrar.php>Cerrar Sesión</a>
             </li>
@@ -65,4 +68,3 @@
 
     <div class="container">
         <div class="row">
-            

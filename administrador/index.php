@@ -1,10 +1,6 @@
 <?php include("template/cabecera.php"); ?>
-
-    <div class="jumbotron"><h1 class="display-3">Bienvenido <?php echo $_SESSION["nombreUsuario"] ?></h1>
-        
-        <p class="lead">Página inicial después del login.</p>
-        <hr class="my-2">
-        <p>Agregar...</p>
+    <div class="jumbotron">
+    <h1 class="display-5">Bienvenido <?php echo $_SESSION["nombreUsuario"] ?></h1>
     </div>
-
+    <img src="<?php echo $url;?>/images/Fondo.png" alt="portada">
 <?php include("template/pie.php"); ?>

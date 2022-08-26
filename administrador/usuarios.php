@@ -10,8 +10,9 @@
     $accion=(isset($_POST["accion"]))?$_POST["accion"]:"";
 ?>
 
-<form action="" method="POST">
-    <div class="row">
+<h3 class="text-center">Usuarios</h3>
+<form action="" method="POST" class="card-deck">
+    <div class="row card">
         <div class="col-10">
             <table class="table table-striped table-bordered" style="width: 100%" id="tabla">
                 <thead>
@@ -34,9 +35,10 @@
                 <input type="text" class="form-control" name="fndNombre" id="fndNombre" hidden>
             </div>
             <div class="btn-toolbar">
-                <button type="button" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" onclick="location.href='usuarios/agregar.php'">Agregar nuevo usuario</button> 
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar" id="Modificar" formaction="usuarios/modificar.php">Modificar mi cuenta</button>
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="usuarios/eliminar.php" disabled>Eliminar otro usuario</button>
+                <button type="button" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" onclick="location.href='usuarios/agregarUsuario.php'">Agregar nuevo usuario</button> 
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar1" id="Modificar1" formaction="usuarios/modificarUsuario.php" disabled>Modificar usuario</button>
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="usuarios/eliminarUsuario.php" disabled>Eliminar usuario</button>
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar2" id="Modificar2" formaction="usuarios/modificarUsuario.php">Modificar mi cuenta</button>
             </div>
         </div>
     </div>
@@ -64,11 +66,13 @@
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
                 document.getElementById("fndNombre").value = "";
+                document.getElementById("Modificar1").disabled = true;
                 document.getElementById("Eliminar").disabled = true;
             } else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
                 document.getElementById("fndNombre").value = pikResolucion;
+                document.getElementById("Modificar1").disabled = false;
                 document.getElementById("Eliminar").disabled = false;
             }
         });

@@ -2,16 +2,18 @@
 
 <?php
     include("../config/conexionBD.php");
-    $sentenciaSQL=$conexion->prepare("SELECT * FROM carreras");
+    $sentenciaSQL=$conexion->prepare("SELECT * FROM materias");
     $sentenciaSQL->execute(); 
     $listaCarreras=$sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
     $fndResolucion=(isset($_POST["fndResolucion"]))?$_POST["fndResolucion"]:"";
     $accion=(isset($_POST["accion"]))?$_POST["accion"]:"";
 ?>
 
-<form action="" method="POST">
-    <div class="row">
+<h3 class="text-center">Materias</h3>
+<form class="card-deck" action="" method="POST">
+    <div class="row card">
         <div class="col-10">
+            <h5 class="mt-2">Listado de materias</h5>
             <table class="table table-striped table-bordered" style="width: 100%" id="tabla">
                 <thead>
                     <th>Resolución</th>
@@ -35,9 +37,9 @@
                 <input type="text" class="form-control" name="fndResolucion" id="fndResolucion" hidden>
             </div>
             <div class="btn-toolbar">
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Agregar" id="Agregar" formaction="materias/agregar.php" disabled>Agregar</button>
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar" id="Modificar" formaction="materias/modificar.php" disabled>Modificar</button>
-                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="materias/eliminar.php" disabled>Eliminar</button>
+                <button type="button" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" onclick="location.href='carreras/agregarMateria.php'">Agregar</button>
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Modificar" id="Modificar" formaction="materias/editarMateria.php" disabled>Modificar Materia</button>
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Eliminar" id="Eliminar" formaction="carreras/eliminarCarrera.php" disabled>Eliminar</button>
             </div>
         </div>
     </div>
@@ -65,14 +67,12 @@
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
                 document.getElementById("fndResolucion").value = "";
-                document.getElementById("Agregar").disabled = true;
                 document.getElementById("Modificar").disabled = true;
                 document.getElementById("Eliminar").disabled = true;
             } else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
                 document.getElementById("fndResolucion").value = pikResolucion;
-                document.getElementById("Agregar").disabled = false;
                 document.getElementById("Modificar").disabled = false;
                 document.getElementById("Eliminar").disabled = false;
             }
