@@ -9,11 +9,9 @@
     $accion=(isset($_POST["accion"]))?$_POST["accion"]:"";
 ?>
 
-<h3 class="text-center">Materias</h3>
-<form class="card-deck" action="" method="POST">
-    <div class="row card">
+<form action="" method="POST">
+    <div class="row">
         <div class="col-10">
-            <h5 class="mt-2">Listado de materias</h5>
             <table class="table table-striped table-bordered" style="width: 100%" id="tabla">
                 <thead>
                     <th>Resolución</th>
@@ -37,7 +35,7 @@
                 <input type="text" class="form-control" name="fndResolucion" id="fndResolucion" hidden>
             </div>
             <div class="btn-toolbar">
-            <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Agregar" id="Agregar" formaction="materias/editar.php" disabled>Editar materias</button>
+                <button type="submit" class="btn btn-primary btn-block mt-3 mb-3" style="width: 100%" name="accion" value="Editar" id="Editar" formaction="materias/editarMateria.php" disabled>Editar materias</button>
             </div>
         </div>
     </div>
@@ -65,12 +63,12 @@
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
                 document.getElementById("fndResolucion").value = "";
-                document.getElementById("Modificar").disabled = true;
+                document.getElementById("Editar").disabled = true;
             } else {
                 table.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
                 document.getElementById("fndResolucion").value = pikResolucion;
-                document.getElementById("Modificar").disabled = false;
+                document.getElementById("Editar").disabled = false;
             }
         });
         $('#button').click(function () {

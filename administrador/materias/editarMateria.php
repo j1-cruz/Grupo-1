@@ -8,30 +8,29 @@
 ?>
 
 <?php
-    $sndResolucion=(isset($_POST["fndResolucion"]))?$_POST["fndResolucion"]:"";
+    $sndResolucion=(isset($_REQUEST["fndResolucion"]))?$_REQUEST["fndResolucion"]:"";
+    $accion=(isset($_REQUEST["accion"]))?$_REQUEST["accion"]:"";
     $txtCodigo1=(isset($_POST["txtCodigo1"]))?$_POST["txtCodigo1"]:"";
     $txtNombre1=(isset($_POST["txtNombre1"]))?$_POST["txtNombre1"]:"";
     $txtNombre2=(isset($_POST["txtNombre2"]))?$_POST["txtNombre2"]:"";
+    $txtId1=(isset($_POST["txtId1"]))?$_POST["txtId1"]:"";
     $txtCodigo=(isset($_POST["txtCodigo"]))?$_POST["txtCodigo"]:"";
     $txtNombreMateria=(isset($_POST["txtNombreMateria"]))?$_POST["txtNombreMateria"]:"";
-    $accion=(isset($_POST["accion"]))?$_POST["accion"]:"";
 
     include("../../config/conexionBD.php");
 
     switch ($accion) {
-        case "Agregar":
+        case "Editar":
             $sentenciaSQL=$conexion->prepare("SELECT * FROM carreras WHERE resolucion=:resolucion");
             $sentenciaSQL->bindParam(':resolucion', $sndResolucion);
             $sentenciaSQL->execute();
             $dato=$sentenciaSQL->fetch(PDO::FETCH_LAZY);
-            $bdResolucion=(isset($dato["resolucion"]))?$dato["resolucion"]:"";
-            if ($_POST["fndResolucion"]==$bdResolucion) {
-                $_SESSION['varResolucion'] = $sndResolucion;
-                $txtResolucion=$dato['resolucion'];
-                $_SESSION['varNombre']=$dato['nombre'];
-                $_SESSION['varCantidad_anios']=$dato['cantidad_anios'];
-                $_SESSION['varAnioCursada']=1;
-            }
+            $_SESSION['varId'] = $dato['id'];
+            $_SESSION['varResolucion'] = $sndResolucion;
+            $txtResolucion=$dato['resolucion'];
+            $_SESSION['varNombre']=$dato['nombre'];
+            $_SESSION['varCantidad_anios']=$dato['cantidad_anios'];
+            $_SESSION['varAnioCursada']=1;
             break;
         case "Anterior":
             if ($_SESSION['varAnioCursada'] > 1) {
@@ -167,7 +166,21 @@
                 
             </script>
             ';
-            break;    
+            break;
+        case "Correlativas":
+            echo '
+            <script>
+                window.onload = function () {
+                    abrirModal();    
+                };
+                function abrirModal() {
+                    $("#verModal").modal("show");
+                }
+            </script>
+            ';
+            break;
+        case "guardarCorrelativas":
+            break;
     }
 ?>
 
@@ -259,6 +272,7 @@
                 <div class="col-12">
                     <table class="table table-striped table-bordered" style="width: 100%" id="tabla2">
                         <thead>
+                            <th>Id</th>
                             <th>Nombre</th>
                         </thead>
                         <tbody>
@@ -271,22 +285,79 @@
                             ?>
                             <?php foreach($filtro2Materias as $filtro2) { ?>
                             <tr>
+                                <td><?php echo $filtro2['id']; ?></td>
                                 <td><?php echo $filtro2['nombre']; ?></td>
                             </tr>
                             <?php } ?>     
                         </tbody>
                     </table>
+                    <input type="text" class="form-control" name="txtId1" value="<?php echo $txtId1; ?>" id="txtId1" hidden>
                     <input type="text" class="form-control" name="txtNombre2" value="<?php echo $txtNombre2; ?>" id="txtNombre2" hidden>
                     <button type="submit" name="accion" value="Retirar" class="btn btn-primary" id="Retirar" disabled><- Retirar</button>
                     <button type="button" class="btn btn-primary float-right" onclick="location.href='../materias.php'">Terminar</button>
                     <br><br>
+                    <div class="form-row">
+                        <button type="submit" name="accion" value="Correlativas" class="btn btn-primary col-md-12" id="Correlativas" disabled>Editar Correlativas</button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="verModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post">
+                <!-- cabecera del diálogo -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Materia <?php echo $txtNombre2;?></h4>
+                    
+                    <button type="button" class="close cerrarVerModal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <!-- cuerpo del diálogo -->
+                <div class="modal-body">
+                    <div class="col-12">
+                        <h5 class="modal-title">Seleccione de cuáles materias es correlativa :</h5>
+                        <table class="table table-striped table-bordered" style="width: 100%" id="tabla3">
+                            <thead>
+                                <th>Id</th>
+                                <th>Nombre de Materia</th>
+                                <th>Año</th>
+                            </thead>
+                            <tbody>
+                                <?php
+                                    $sentenciaSQL=$conexion->prepare("SELECT * FROM materias WHERE resolucion=:resolucion AND anio<:anio");
+                                    $sentenciaSQL->bindParam(':resolucion', $_SESSION['varResolucion']);
+                                    $sentenciaSQL->bindParam(':anio', $_SESSION['varAnioCursada']);
+                                    $sentenciaSQL->execute(); 
+                                    $filtro3Materias=$sentenciaSQL->fetchAll(PDO::FETCH_ASSOC);
+                                ?>
+                                <?php foreach($filtro3Materias as $filtro3) { ?>
+                                <tr>
+                                    <td><?php echo $filtro3['id']; ?></td>
+                                    <td><?php echo $filtro3['nombre']; ?></td>
+                                    <td><?php echo $filtro3['anio']; ?></td>
+                                </tr>
+                                <?php } ?> 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- pie del diálogo -->
+                <div class="modal-footer">
+                    <input type="text" class="form-control" name="txtId1" value="<?php echo $txtId1;?>" id="txtId1" hidden>
+                    <button type="button" class="btn btn-primary cerrarVerModal">Cerrar</button>
+                    <button type="submit" name="accion" value="guardarCorrelativas" id="guardarCorrelativas" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 
                             
+<script src="<?php echo $url;?>/js/bootstrap.bundle.min.js"></script>
 <script src="<?php echo $url;?>/js/jquery-3.5.1.js"></script>
 <script src="<?php echo $url;?>/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $url;?>/js/dataTables.bootstrap4.min.js"></script>
@@ -329,11 +400,7 @@
                 document.getElementById("txtNombre1").value = pikNombreMateria;
                 document.getElementById("Eliminar").disabled = false;
             }
-        });
-        $('#button').click(function () {
-            table1.row('.selected').remove().draw(false);
-            console.log( table1.row( this ).data() );
-        });    
+        });   
     });
 </script>
 
@@ -343,6 +410,12 @@
             "language": {
                 "url": "<?php echo $url;?>/json/spanish.json"
             },
+            "columnDefs": [{
+                target: 0,
+                visible: false,
+                searchable: false,
+                },
+            ],
             "searching": false,
             "info": false,
             "pageLength": 7,
@@ -350,22 +423,70 @@
             "pagingType": "simple",
         });
         $('#tabla2 tbody').on('click', 'tr', function () {
-            var pikNombre = table2.row( this ).data()[0];       
+            var pikId = table2.row( this ).data()[0];
+            var pikNombre = table2.row( this ).data()[1];       
             if ($(this).hasClass('selected')) {
                 $(this).removeClass('selected');
+                document.getElementById("txtId1").value = "";
                 document.getElementById("txtNombre2").value = "";
                 document.getElementById("Retirar").disabled = true;
+                document.getElementById("Correlativas").disabled = true; 
             } else {
                 table2.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
+                document.getElementById("txtId1").value = pikId;
                 document.getElementById("txtNombre2").value = pikNombre;
                 document.getElementById("Retirar").disabled = false;
+                if (<?php echo $_SESSION['varAnioCursada'];?> > 1) {
+                    document.getElementById("Correlativas").disabled = false;
+                }
             }
-        });
-        $('#button').click(function () {
-            table2.row('.selected').remove().draw(false);
-            console.log( table2.row( this ).data() );
         });    
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var table3 = $('#tabla3').DataTable({
+            "language": {
+                "url": "<?php echo $url;?>/json/spanish.json"
+            },
+            "columnDefs": [{
+                target: 0,
+                visible: false,
+                searchable: false,
+                },
+            ],
+            "searching": false,
+            "info": false,
+            "pageLength": 8,
+            "lengthChange": false,
+            "pagingType": "simple",
+        });
+        //$("#tabla3").DataTable().row(0).nodes().to$().toggleClass( 'selected' );
+        $('#tabla3 tbody').on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $('#guardarCorrelativas').click( function () {
+            var rowdata = table3.rows('.selected').data();  
+            for (var i = 0; i < rowdata.length; i++) {
+                    $.ajax({
+                        type: "post",
+                        url: "guardarCorrelativas.php",
+                        data: {
+                                resolucion: "<?php echo $_SESSION['varResolucion']; ?>",
+                                id1: "<?php echo $txtId1; ?>",
+                                id2: rowdata[i][0],
+                        },
+                    });
+            }
+        }); 
+    });
+</script>
+
+<script>
+    $(".cerrarVerModal").click(function(){
+    $("#verModal").modal("hide")
     });
 </script>
 

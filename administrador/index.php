@@ -1,6 +1,8 @@
 <?php include("template/cabecera.php"); ?>
-    <div class="jumbotron">
+<link rel="stylesheet" href="../index.css">
+<div class="jumbotron">
     <h1 class="display-5">Bienvenido <?php echo $_SESSION["nombreUsuario"] ?></h1>
     </div>
-    <img src="<?php echo $url;?>/images/Fondo.png" alt="portada">
+</div>
+    
 <?php include("template/pie.php"); ?>
